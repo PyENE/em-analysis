@@ -1,102 +1,84 @@
-appdirs==1.4.3
-backports-abc==0.5
-backports.functools-lru-cache==1.4
-backports.shutil-get-terminal-size==1.0.0
-backports.shutil-which==3.5.1
-bleach==2.1.1
-brewer2mpl==1.4.1
-certifi==2017.7.27.1
-chardet==3.0.4
-colorama==0.3.9
-configparser==3.5.0
-cycler==0.10.0
-decorator==4.1.2
-entrypoints==0.2.3
-enum34==1.1.6
-functools32==3.2.3.post2
-ggplot==0.11.5
-gitdb2==2.0.3
-GitPython==2.1.7
-gnuplot-py==1.8
-graphviz==0.8.1
-html5lib==1.0b10
-idna==2.6
-ipykernel==4.6.1
-ipython==5.5.0
-ipython-genutils==0.2.0
-ipywidgets==7.0.3
-Jinja2==2.9.6
-jsonschema==2.6.0
-jupyter==1.0.0
-jupyter-client==5.1.0
-jupyter-console==5.2.0
-jupyter-core==4.3.0
-MarkupSafe==1.0
-matplotlib==2.1.0
-mistune==0.8
-mutagen==1.38
-nbconvert==5.3.1
-nbdime==0.3.0
-nbformat==4.4.0
-nose==1.3.7
-notebook==5.2.0
-numpy==1.13.3
-olefile==0.44
-OpenAlea.Core==1.0.0
-OpenAlea.Deploy==1.0.0
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.DeployGui&subdirectory=ema/lib/openalea/deploygui
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.GraphEditor&subdirectory=ema/lib/openalea/grapheditor
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.Image&subdirectory=ema/lib/openalea/image
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.Misc&subdirectory=ema/lib/openalea/misc
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.Numpy&subdirectory=ema/lib/openalea/numpy
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.PkgBuilder&subdirectory=ema/lib/openalea/pkg_builder
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.Pylab&subdirectory=ema/lib/openalea/pylab
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.Scheduler&subdirectory=ema/lib/openalea/scheduler
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.SConsX&subdirectory=ema/lib/openalea/sconsx
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.StdLib&subdirectory=ema/lib/openalea/stdlib
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.Visualea&subdirectory=ema/lib/openalea/visualea
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=OpenAlea.VPLTK&subdirectory=ema/lib/openalea/vpltk
-pandas==0.20.3
-pandocfilters==1.4.2
-pathlib2==2.3.0
-patsy==0.4.1
-pexpect==4.2.1
-pickleshare==0.7.4
-Pillow==4.3.0
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=PkgIt&subdirectory=ema/lib/openalea/pkgit
-prompt-toolkit==1.0.15
-ptyprocess==0.5.2
-py==1.4.34
-Pygments==2.2.0
-pyparsing==2.2.0
-pytest==3.2.3
-python-dateutil==2.6.1
-pytz==2017.2
-pyzmq==16.0.3
-qtconsole==4.3.1
-requests==2.18.4
-scandir==1.6
-scikit-learn==0.19.1
-scipy==0.19.1
-seaborn==0.8.1
-simplegeneric==0.8.1
-singledispatch==3.4.0.3
-six==1.11.0
-smmap2==2.0.3
-statsmodels==0.8.0
-subprocess32==3.2.7
-terminado==0.6
-testpath==0.3.1
-tornado==4.5.2
-traitlets==4.3.2
-Unidecode==0.4.21
-urllib3==1.22
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=VPlants.Ema&subdirectory=ema
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=VPlants.Sequence_analysis&subdirectory=ema/lib/vplants/sequence_analysis
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=VPlants.Stat_Tool&subdirectory=ema/lib/vplants/stat_tool
--e git+https://github.com/brice-olivier/ema.git@ebe30dec1224fcc0b05e302ab2dae6d0d34671f2#egg=VPlants.Tool&subdirectory=ema/lib/vplants/tool
-wcwidth==0.1.7
-webencodings==0.5.1
-widgetsnbextension==3.0.6
-xlrd==1.1.0
-xlwt==1.3.0
+appdirs>=1.4.3
+backports-abc>=0.5
+backports.functools-lru-cache>=1.4
+backports.shutil-get-terminal-size>=1.0.0
+backports.shutil-which>=3.5.1
+bleach>=2.1.1
+brewer2mpl>=1.4.1
+certifi>=2017.7.27.1
+chardet>=3.0.4
+colorama>=0.3.9
+configparser>=3.5.0
+cycler>=0.10.0
+decorator>=4.1.2
+entrypoints>=0.2.3
+enum34>=1.1.6
+functools32>=3.2.3.post2
+ggplot>=0.11.5
+gitdb2>=2.0.3
+GitPython>=2.1.7
+gnuplot-py>=1.8
+graphviz>=0.8.1
+html5lib>=1.0b10
+idna>=2.6
+ipykernel>=4.6.1
+ipython>=5.5.0
+ipython-genutils>=0.2.0
+ipywidgets>=7.0.3
+Jinja2>=2.9.6
+jsonschema>=2.6.0
+jupyter>=1.0.0
+jupyter-client>=5.1.0
+jupyter-console>=5.2.0
+jupyter-core>=4.3.0
+MarkupSafe>=1.0
+matplotlib>=2.1.0
+mistune>=0.8
+mutagen>=1.38
+nbconvert>=5.3.1
+nbdime>=0.3.0
+nbformat>=4.4.0
+nose>=1.3.7
+numpy>=1.13.3
+olefile>=0.44
+OpenAlea.Core>=1.0.0
+OpenAlea.Deploy>=1.0.0
+pandas>=0.20.3
+pandocfilters>=1.4.2
+pathlib2>=2.3.0
+patsy>=0.4.1
+pexpect>=4.2.1
+pickleshare>=0.7.4
+Pillow>=4.3.0
+prompt-toolkit>=1.0.15
+ptyprocess>=0.5.2
+py>=1.4.34
+Pygments>=2.2.0
+pyparsing>=2.2.0
+pytest>=3.2.3
+python-dateutil>=2.6.1
+pytz>=2017.2
+pyzmq>=16.0.3
+qtconsole>=4.3.1
+requests>=2.18.4
+scandir>=1.6
+scikit-learn>=0.19.1
+scipy>=0.19.1
+seaborn>=0.8.1
+simplegeneric>=0.8.1
+singledispatch>=3.4.0.3
+six>=1.11.0
+smmap2>=2.0.3
+statsmodels>=0.8.0
+subprocess32>=3.2.7
+terminado>=0.6
+testpath>=0.3.1
+tornado>=4.5.2
+traitlets>=4.3.2
+Unidecode>=0.4.21
+urllib3>=1.22
+wcwidth>=0.1.7
+webencodings>=0.5.1
+widgetsnbextension>=3.0.6
+xlrd>=1.1.0
+xlwt>=1.3.0
