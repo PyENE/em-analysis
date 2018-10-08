@@ -1,0 +1,43 @@
+# -*-python-*-
+
+import os, commands
+
+# Import global objects
+
+Import("env")
+
+env_test = env.Clone()
+
+pj = os.path.join
+
+if env_test['debug']:
+   env_test.Append(CPPDEFINES= ['DEBUG'])
+env_test.AppendUnique(LIBS=['vptool', 'vpstat_tool', 'vpsequence'])
+if env_test['with_efence']:
+    env_test.AppendUnique(LIBS= ['efence'])
+
+# list of .cpp test sources
+tests= Split("""
+test_hmc.cpp
+test_semi_markov_data_simulation.cpp
+""")
+
+tests = ""
+
+def prog(p):
+  return env_test.Program(p)
+
+test_prog=map(prog, tests)
+
+"""
+def rmTests(target, source, env):
+  import os
+  print [ os.remove(str(s)) for s in source]
+  return 1
+
+r= env.AddPostAction(test_prog, rmTests)
+Alias('clean_test',r)
+"""
+
+Alias('test_ema', test_prog)
+Alias('test', 'test_ema')

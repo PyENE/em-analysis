@@ -1,0 +1,72 @@
+openalea (1.0.1~ppa8) quantal; urgency=low
+
+  *  Port to Quantal 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Mon, 10 Dec 2012 15:18:21 +0100
+
+openalea (1.0.1~ppa2) precise; urgency=low
+
+  * Switch to dh_python2 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Tue, 11 Sep 2012 15:45:28 +0200
+
+openalea (1.0.1~ppa1) precise; urgency=low
+
+  * Release 1. 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 23 Mar 2012 11:22:17 +0100
+
+openalea (1.0.0b1~ppa3) oneiric; urgency=low
+
+  * Fix openalea namespace
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Thu, 05 Jan 2012 17:33:44 +0100
+
+openalea (1.0.0b1~ppa2) oneiric; urgency=low
+
+  * Fix dependency problem with python-all-dev 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Mon, 05 Dec 2011 09:52:33 +0100
+
+openalea (1.0.0b1~ppa1) oneiric; urgency=low
+
+  * Final release
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 02 Dec 2011 11:53:53 +0100
+
+openalea (0.9.0-2~ppa7) lucid; urgency=low
+
+  * Final release
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 29 Oct 2010 21:23:03 +0200
+
+openalea (0.9.0-1ubuntu1ppa6) lucid; urgency=low
+
+  * Add openalea.scheduler in the dependencies 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 24 Sep 2010 09:56:35 +0200
+
+openalea (0.9.0-1ubuntu1ppa5) lucid; urgency=low
+
+  * Add openalea.deploygui in the dependencies 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 24 Sep 2010 09:56:35 +0200
+
+openalea (0.9.0-1ubuntu1ppa4) lucid; urgency=low
+
+  [ Christophe Pradal ]
+  * change arch from any to all
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Thu, 23 Sep 2010 14:47:27 +0200
+
+Oopenalea (0.9.0-1ubuntu1ppa3) lucid; urgency=low
+
+  [ OpenAlea consortium ]
+  * source package automatically created by stdeb 0.6.0
+
+  [ Christophe Pradal ]
+  * Remove scons from setup.py 
+  * Add openalea.deploygui in the dependencies 
+  * 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Thu, 23 Sep 2010 14:46:20 +0200

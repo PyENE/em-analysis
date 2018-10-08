@@ -1,0 +1,13 @@
+.idea
+.cache
+build
+build-scons
+dist
+doc
+share
+
+*.pyc
+*.so
+*.os
+
+.sconsign.dblite

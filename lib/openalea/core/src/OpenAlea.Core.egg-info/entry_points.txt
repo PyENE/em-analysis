@@ -1,0 +1,6 @@
+[console_scripts]
+alea = openalea.core.alea:main
+
+[wralea]
+openalea.flow control = openalea.core.system
+

@@ -1,0 +1,14 @@
+Metadata-Version: 1.0
+Name: OpenAlea.Image
+Version: 1.0.1
+Summary: Image manipulation
+Home-page: http://openalea.gforge.inria.fr
+Author: OpenAlea consortium
+Author-email: jerome chopard at sophia inria fr, Eric Moscardi at sophia inria fr
+License: Cecill-C
+Description-Content-Type: UNKNOWN
+Description: 
+        Image contains algorithms to play with data images
+        and visualea nodes to wrap numpy algorithms
+        
+Platform: UNKNOWN

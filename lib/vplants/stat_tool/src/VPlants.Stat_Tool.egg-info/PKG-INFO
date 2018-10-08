@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: VPlants.Stat-Tool
+Version: 1.2.0
+Summary: Basic Statistical tools
+Home-page: http://openalea.gforge.inria.fr/doc/vplants/stat_tool/doc/html/contents.html
+Author: Y. Guedon, JB. Durand, T. Cokelaer, S. Dufour
+Author-email: yann.guedon@cirad.fr, thomas.cokelaer@sophia.inria.fr
+License: CeCILL-C
+Description-Content-Type: UNKNOWN
+Description: A Python version of the AML Stat module.
+Platform: Linux Ubuntu/Fedora, WindowsXP, MacOsX10.5

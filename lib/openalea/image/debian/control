@@ -1,0 +1,15 @@
+Source: openalea-image
+Maintainer: OpenAlea consortium <christophe.pradal@cirad.fr>
+Section: python
+Priority: optional
+Build-Depends: python-all (>= 2.6.6-3~), python-setuptools, debhelper (>= 7), python-openalea.deploy (>= 0.8)
+
+Package: python-openalea.image
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}, python-openalea.core, python-numpy, python-scipy, python-qt4
+Provides: ${python:Provides}
+Description: Image manipulation
+ .
+ Image contains algorithms to play with data images
+ and visualea nodes to wrap numpy algorithms
+ .

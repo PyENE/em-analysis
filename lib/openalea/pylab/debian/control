@@ -1,0 +1,12 @@
+Source: openalea-pylab
+Maintainer: Christophe Pradal <christophe.pradal@cirad.fr>
+Section: python
+Priority: optional
+Build-Depends: python-all (>= 2.6.6-3~), python-setuptools, debhelper (>= 7), python-openalea.deploy
+
+Package: python-openalea.pylab
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}, python-openalea.core, python-matplotlib, python-openalea.numpy
+Provides: ${python:Provides}
+Description: Pylab interface
+ Pylab interface provides a set of nodes that provide pylab tools within OpenAlea

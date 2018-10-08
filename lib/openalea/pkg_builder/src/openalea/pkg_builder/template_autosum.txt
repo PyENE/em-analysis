@@ -1,0 +1,21 @@
+.. change to your needs
+
+.. _${PACKAGE}_reference:
+
+
+Reference guide
+###################################
+.. contents::
+
+.. currentmodule:: $FULL_NAME.__init__
+
+
+:mod:`$FULL_NAME` module
+===============================================
+.. automodule:: $FULL_NAME.__init__
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+    :synopsis: doc todo
+
