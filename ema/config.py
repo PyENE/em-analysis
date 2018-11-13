@@ -1,18 +1,18 @@
-import os
-import seaborn as sns
+# -*- coding: utf-8 -*-
+__author__ = 'Brice Olivier'
 
-PROJECT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..' + os.sep + '..' + os.sep)
-SHARE_PATH = os.path.join(PROJECT_PATH, 'share')
-DATA_PATH = os.path.join(SHARE_PATH, 'data')
-PNG_TEXTS_PATH = os.path.join(DATA_PATH, "Materiel")
-MODELS_PATH = os.path.join(SHARE_PATH, 'models')
-GRAPHICS_PATH = os.path.join(SHARE_PATH, 'graphics')
-REPORTS_PATH = os.path.join(SHARE_PATH, 'reports')
-SRC_PATH = os.path.join(PROJECT_PATH, 'src')
-ANALYSIS_PATH = os.path.join(PROJECT_PATH, 'notebooks')
-TEST_PATH = os.path.join(PROJECT_PATH, 'test')
-FIXATION_PATH = os.path.join(PROJECT_PATH, '..' + os.sep + 'fixation-word-assignation')
-PLOTS_PATH = os.path.join(PROJECT_PATH, '..' + os.sep + 'plots')
-FASTTEXT_PATH = os.path.join(PROJECT_PATH, '..', 'fasttext')
 
-COLOR_PALETTE = sns.color_palette('dark', 10)
+OUTPUT_PATH = '/home/bolivier/PyENE/PyENE/em-analysis/output/'
+
+IS_FIRST_COL = 'ISFIRST'
+IS_LAST_COL = 'ISLAST'
+OFF_DURATION_COL = 'OFF_DUR'
+SUBJECT_NAME_COL = 'SUBJ_NAME'
+TEXT_NAME_COL = 'TEXT'
+CHAR_INCREMENT_COL = 'CINC'
+WORD_INCREMENT_COL = 'WINC'
+SACCADE_DIRECTION_COL = 'SACDIR'
+SACCADE_AMPLITUDE_COL = 'SACAMP'
+FIXATION_DURATION_COL = 'FDUR'
+READMODE_COL = 'READMODE'
+WORD_FREQUENCY_COL = 'WFREQ'

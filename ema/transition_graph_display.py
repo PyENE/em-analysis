@@ -1,4 +1,4 @@
-from config import GRAPHICS_PATH
+from .config import OUTPUT_PATH
 import functools
 import graphviz as gv
 import numpy as np
@@ -8,7 +8,7 @@ import os
 class TransitionGraphDisplay:
 
     def __init__(self, hsmc_file, output_file=os.path.join(
-                 GRAPHICS_PATH, 'transition_graph'),
+                 OUTPUT_PATH, 'transition_graph'),
                  probability_threshold=0.01, decimals_displayed=4, display=True):
         self._hsmc_file = hsmc_file
         self.output_file = output_file

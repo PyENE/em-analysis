@@ -1,10 +1,7 @@
 """Build an HTML report given a model."""
-from config import GRAPHICS_PATH
-from config import PNG_TEXTS_PATH
+from .config import OUTPUT_PATH
+from .transition_graph_display import TransitionGraphDisplay
 import visuscanpath
-from config import COLOR_PALETTE
-from config import REPORTS_PATH
-from transition_graph_display import TransitionGraphDisplay
 import Gnuplot
 import logging
 import matplotlib
@@ -13,7 +10,6 @@ import os
 import seaborn as sns
 import unidecode
 import webbrowser
-
 
 class Htmlreport(object):
     """Build an HTML report given a model."""
@@ -26,18 +22,18 @@ class Htmlreport(object):
         self._graph_probability_threshold = graph_probability_threshold
         self._graph_decimals_displayed = graph_decimals_displayed
         self._number_of_text_restorations_to_display = number_of_text_restorations_to_display
-        self._transition_graph_file_path = os.path.join(GRAPHICS_PATH, self._model.model_id + '-transition-graph')
-        self._html_report_file_path = os.path.join(REPORTS_PATH, self._model.model_id + '-report' + '.html')
+        self._transition_graph_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-transition-graph')
+        self._html_report_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-report' + '.html')
         self._model.eye_movement_data.restored_data_file_path = os.path.join(self._model._tmp_path,
                                                                              self._model.model_id + '-restored-data' +
                                                                              '.xls')
-        self._fdur_file_path = os.path.join(GRAPHICS_PATH, self._model.model_id + '-boxplot-fdur.png')
-        self._sacamp_file_path = os.path.join(GRAPHICS_PATH, self._model.model_id + '-boxplot-sacamp.png')
-        self._winc_file_path = os.path.join(GRAPHICS_PATH, self._model.model_id + '-boxplot-winc.png')
-        self._cinc_file_path = os.path.join(GRAPHICS_PATH, self._model.model_id + '-boxplot-cinc.png')
-        self._cosinst_file_path = os.path.join(GRAPHICS_PATH, self._model.model_id + '-boxplot-cosinst.png')
-        self._coscum_file_path = os.path.join(GRAPHICS_PATH, self._model.model_id + '-boxplot-coscum.png')
-        self._reading_speed_file_path = os.path.join(GRAPHICS_PATH, self._model.model_id + '-boxplot-readingspeed.png')
+        self._fdur_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-boxplot-fdur.png')
+        self._sacamp_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-boxplot-sacamp.png')
+        self._winc_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-boxplot-winc.png')
+        self._cinc_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-boxplot-cinc.png')
+        self._cosinst_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-boxplot-cosinst.png')
+        self._coscum_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-boxplot-coscum.png')
+        self._reading_speed_file_path = os.path.join(OUTPUT_PATH, self._model.model_id + '-boxplot-readingspeed.png')
         self._phase = phase
         self._nb_states = self._model.k
         if phase:
@@ -62,7 +58,7 @@ class Htmlreport(object):
     def _generate_sojourn_distribution_plots(self):
         for i in xrange(0, self._model.k):
             try:
-                plot_file = os.path.join(GRAPHICS_PATH, self._model.model_id +
+                plot_file = os.path.join(OUTPUT_PATH, self._model.model_id +
                                          '-sojourn-distribution-state-' + str(i))
                 self._model.hsmm.extract(5, 0, i).plot_write(plot_file, "")
                 g = Gnuplot.Gnuplot()
@@ -76,7 +72,7 @@ class Htmlreport(object):
         for i in xrange(0, len(self._model.parameters.output_processes)):
             for j in xrange(0, self._model.k):
                     try:
-                        plot_file = os.path.join(GRAPHICS_PATH, self._model.model_id + '-output-process-' +
+                        plot_file = os.path.join(OUTPUT_PATH, self._model.model_id + '-output-process-' +
                                                  str(i + 1) + '-state-' + str(j))
                         self._model.hsmm.extract(1, i + 1, j).plot_write(
                             plot_file, "")
@@ -204,7 +200,7 @@ class Htmlreport(object):
                                        text_name=subj_text_list.loc[i][1],
                                        print_col='READMODETMP',
                                        hue=phase_or_state,
-                                       output_file=os.path.join(GRAPHICS_PATH, self._model.model_id + "-subj-" +
+                                       output_file=os.path.join(OUTPUT_PATH, self._model.model_id + "-subj-" +
                                                                 subj_text_list.loc[i][0] +
                                                                 "-text-" +
                                                                 unidecode.unidecode(subj_text_list.loc[i][1]) + ".png"),
@@ -234,7 +230,7 @@ class Htmlreport(object):
         self._html_code += '</style>\n'
         self._html_code += '<link rel="stylesheet" type="text/css"'
         self._html_code += 'href="'
-        self._html_code += os.path.join(REPORTS_PATH, 'style.css')
+        self._html_code += os.path.join(OUTPUT_PATH, 'style.css')
         self._html_code += '">\n'
         self._html_code += '</head>\n'
         self._html_code += '<body>\n'
@@ -245,7 +241,7 @@ class Htmlreport(object):
         self._html_code += str(self._graph_probability_threshold)
         self._html_code += ')</p>\n'
         self._html_code += '<img src="'
-        self._html_code += os.path.join(GRAPHICS_PATH, self._model.model_id + '-transition-graph.png')
+        self._html_code += os.path.join(OUTPUT_PATH, self._model.model_id + '-transition-graph.png')
         self._html_code += '" alt="N/D">\n'
         self._html_code += '</div>\n'
         self._html_code += '<div id="model_criterion">'
@@ -264,13 +260,13 @@ class Htmlreport(object):
         # sojourn
         for i in xrange(0, self._model.k):
             self._html_code += '<div><img src="'
-            self._html_code += os.path.join(GRAPHICS_PATH, self._model.model_id + '-sojourn-distribution-state-' +
+            self._html_code += os.path.join(OUTPUT_PATH, self._model.model_id + '-sojourn-distribution-state-' +
                                             str(i) + '.png')
             self._html_code += '" alt="N/D"></div>\n'
             # emission
             for j in xrange(0, len(self._model.parameters.output_processes)):
                 self._html_code += '<div><img src="'
-                self._html_code += os.path.join(GRAPHICS_PATH, self._model.model_id + '-output-process-' +
+                self._html_code += os.path.join(OUTPUT_PATH, self._model.model_id + '-output-process-' +
                                                 str(j + 1) + '-state-' + str(i) + '.png')
                 self._html_code += '" alt="N/D"></div>\n'
         self._html_code += '</div>\n'
@@ -281,43 +277,43 @@ class Htmlreport(object):
         self._html_code += '<div id="fdur_wrap">\n'
         self._html_code += '<div><img src="'
         self._html_code += os.path.join(
-            GRAPHICS_PATH, self._model.model_id + '-boxplot-fdur.png')
+            OUTPUT_PATH, self._model.model_id + '-boxplot-fdur.png')
         self._html_code += '" alt="whoops"></div>\n'
         self._html_code += '</div>\n'
         self._html_code += '<div id="sacamp_wrap">\n'
         self._html_code += '<div><img src="'
         self._html_code += os.path.join(
-            GRAPHICS_PATH, self._model.model_id + '-boxplot-sacamp.png')
+            OUTPUT_PATH, self._model.model_id + '-boxplot-sacamp.png')
         self._html_code += '" alt="whoops"></div>\n'
         self._html_code += '</div>\n'
         self._html_code += '<div id="winc_wrap">\n'
         self._html_code += '<div><img src="'
         self._html_code += os.path.join(
-            GRAPHICS_PATH, self._model.model_id + '-boxplot-winc.png')
+            OUTPUT_PATH, self._model.model_id + '-boxplot-winc.png')
         self._html_code += '" alt="whoops"></div>\n'
         self._html_code += '</div>\n'
         self._html_code += '<div id="cinc_wrap">\n'
         self._html_code += '<div><img src="'
         self._html_code += os.path.join(
-            GRAPHICS_PATH, self._model.model_id + '-boxplot-cinc.png')
+            OUTPUT_PATH, self._model.model_id + '-boxplot-cinc.png')
         self._html_code += '" alt="whoops"></div>\n'
         self._html_code += '</div>\n'
         self._html_code += '<div id="cosinst_wrap">\n'
         self._html_code += '<div><img src="'
         self._html_code += os.path.join(
-            GRAPHICS_PATH, self._model.model_id + '-boxplot-cosinst.png')
+            OUTPUT_PATH, self._model.model_id + '-boxplot-cosinst.png')
         self._html_code += '" alt="whoops"></div>\n'
         self._html_code += '</div>\n'
         self._html_code += '<div id="fdur_wrap">\n'
         self._html_code += '<div><img src="'
         self._html_code += os.path.join(
-            GRAPHICS_PATH, self._model.model_id + '-boxplot-coscum.png')
+            OUTPUT_PATH, self._model.model_id + '-boxplot-coscum.png')
         self._html_code += '" alt="whoops"></div>\n'
         self._html_code += '</div>\n'
         self._html_code += '<div id="readingspeed_wrap">\n'
         self._html_code += '<div><img src="'
         self._html_code += os.path.join(
-            GRAPHICS_PATH, self._model.model_id + '-boxplot-readingspeed.png')
+            OUTPUT_PATH, self._model.model_id + '-boxplot-readingspeed.png')
         self._html_code += '" alt="whoops"></div>\n'
         self._html_code += '</div>\n'
         """
@@ -492,7 +488,7 @@ class Htmlreport(object):
             self._html_code += '<div>'
             self._html_code += '<img src="'
             self._html_code += os.path.join(
-                GRAPHICS_PATH, self._model.model_id + '-subj-'
+                OUTPUT_PATH, self._model.model_id + '-subj-'
                 + str(self.text_restorations_display_list[i][0]) + '-text-'
                 + unidecode.unidecode(self.text_restorations_display_list[i][1]) + '.png')
             self._html_code += '" alt="N/D"></div>\n'
@@ -505,7 +501,7 @@ class Htmlreport(object):
         return self._html_code
 
     def make_css(self):
-        with open(os.path.join(REPORTS_PATH, 'style.css'), 'w') as f:
+        with open(os.path.join(OUTPUT_PATH, 'style.css'), 'w') as f:
             f.write('table, th, td {\nborder: 1px solid black;\nborder-collapse: collapse;\n}th, td {\npadding: 5px;\ntext-align: left;}\n')
             f.write('div\n')
             f.write('{\n')

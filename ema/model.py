@@ -1,11 +1,12 @@
 """Stores a HSMM model and its parameters."""
-from config import MODELS_PATH
+from .config import OUTPUT_PATH
 import initial_probabilities
 import logging
 import model_parameters
 import numpy as np
 import observation_distribution
 import occupancy_distribution
+from openalea.sequence_analysis._sequence_analysis import _MarkovianSequences
 from openalea.sequence_analysis import Estimate
 from openalea.sequence_analysis import HiddenSemiMarkov
 from openalea.sequence_analysis import Sequences
@@ -44,7 +45,7 @@ class Model(object):
         self._tmp_path = tempfile.mkdtemp(prefix='ema-tmp-dir-')
         self._model_id = self._tmp_path[-6:]
         self._n_iter = 0
-        self._hsmc_file = os.path.join(MODELS_PATH, self._model_id + '.hsmc')
+        self._hsmc_file = os.path.join(OUTPUT_PATH, self._model_id + '.hsmc')
 
         # init with hsmc file
         if init_hsmc_file is not None and not random_init and \
@@ -62,7 +63,7 @@ class Model(object):
                   all(item is None for item in [n_init, n_random_seq, n_iter_init])
               and k is not None):
             self._n_iter = 10
-            self.hsmm = Estimate(self._eye_movement_data.input_sequence(self._output_process_name),
+            self.hsmm = Estimate(self._eye_movement_data.get_input_sequence(self._output_process_name),
                                  'HIDDEN_SEMI-MARKOV', 'Ordinary', self._k, 'Irreducible',
                                  OccupancyMean='Estimated', NbIteration=self._n_iter,
                                  Estimator='CompleteLikelihood', StateSequences='Viterbi', Counting=False)
@@ -76,42 +77,46 @@ class Model(object):
                   all(item is not None for item in
                       [k, n_init, n_random_seq, n_iter_init])):
 
-            max_likelihood = float("-inf")
             best_model = Estimate(
-                self._eye_movement_data.input_sequence(self._output_process_name), 'HIDDEN_SEMI-MARKOV', 'Ordinary', self._k,
+                self._eye_movement_data.get_input_sequence(self._output_process_name), 'HIDDEN_SEMI-MARKOV', 'Ordinary',
+                self._k,
                 'Irreducible', OccupancyMean='Estimated',
                 NbIteration=n_iter_init, Estimator='CompleteLikelihood',
                 StateSequences='Viterbi', Counting=False)
-            current_likelihood = best_model.get_likelihood()
-
-            for _ in xrange(0, n_init):
-                attempt_number = 0
-                while attempt_number <= 50:
-                    try:
-                        random_sequences = Sequences(self.generate_random_sequences(n_random_seq))
-                        semi_markov_model = Estimate(random_sequences, "SEMI-MARKOV", 'Ordinary')
-                        semi_markov_model.write_hidden_semi_markov_init_file(os.path.join(MODELS_PATH, 'temp.hsmc'))
-                        hidden_semi_markov_model = HiddenSemiMarkov(os.path.join(MODELS_PATH, 'temp.hsmc'))
-                        hidden_semi_markov_model = Estimate(
-                            self._eye_movement_data.input_sequence(self._output_process_name), "HIDDEN_SEMI-MARKOV",
-                            hidden_semi_markov_model, NbIteration=n_iter_init)
-                        current_likelihood = hidden_semi_markov_model.get_likelihood()
-                        # current_likelihood = hidden_semi_markov_model.get_nb_param_vector()[-1]  # to comment
-                        if current_likelihood > max_likelihood:
-                            max_likelihood = current_likelihood
-                            best_model = hidden_semi_markov_model
-                            self._log_likelihood = hidden_semi_markov_model.get_likelihood_vector()
-                            self._bic = hidden_semi_markov_model.get_bic_vector()
-                            self._nb_parameters = hidden_semi_markov_model.get_nb_param_vector()
-                        break
-                    except Exception as e:
-                        logging.warning(e)
-                if attempt_number >= 20:
-                    raise DeprecationWarning(
-                        'The random initialization seems to be taking'
-                        'too much time.'
-                        'You should consider changing the hyperparameter :'
-                        'n_random_seq')
+            max_likelihood = best_model.get_likelihood()
+            max_bic = best_model.get_bic_vector()[-1]
+            best_model.save(os.path.join(OUTPUT_PATH, 'RandomInit_best_model.hsmc'))
+            print('RandomInit: init, ll %.2f, bic %.2f, n_params %d' %
+                  (max_likelihood, best_model.get_bic_vector()[-1], best_model.get_nb_param_vector()[-1]))
+            for i in range(0, n_init):
+                try:
+                    random_sequences = Sequences(self.generate_random_sequences(n_random_seq))
+                    semi_markov_model = Estimate(_MarkovianSequences(random_sequences), "SEMI-MARKOV", 'Ordinary')
+                    semi_markov_model.write_hidden_semi_markov_init_file(os.path.join(OUTPUT_PATH, 'temp.hsmc'))
+                    hidden_semi_markov_model = HiddenSemiMarkov(os.path.join(OUTPUT_PATH, 'temp.hsmc'))
+                    hidden_semi_markov_model = Estimate(
+                        self._eye_movement_data.get_input_sequence(self._output_process_name), "HIDDEN_SEMI-MARKOV",
+                        hidden_semi_markov_model, NbIteration=n_iter_init)
+                    current_likelihood = hidden_semi_markov_model.get_likelihood()
+                    current_bic = hidden_semi_markov_model.get_bic_vector()[-1]
+                    print('RandomInit: n_iter %d, ll %.2f, bic %.2f, n_params %d' %
+                          (i, current_likelihood,hidden_semi_markov_model.get_bic_vector()[-1],
+                           hidden_semi_markov_model.get_nb_param_vector()[-1]))
+                    # current_likelihood = hidden_semi_markov_model.get_nb_param_vector()[-1]  # to comment
+                    if current_bic > max_bic:
+                        self._log_likelihood = hidden_semi_markov_model.get_likelihood_vector()
+                        self._bic = hidden_semi_markov_model.get_bic_vector()
+                        self._nb_parameters = hidden_semi_markov_model.get_nb_param_vector()
+                        print('RandomInit: a better model was found. n_iter %d, old ll %.2f, new ll %.2f,'
+                              'new bic %.2f, n_param %d' %
+                              (i, current_likelihood, self._log_likelihood[-1], self._bic[-1], self._nb_parameters[-1]))
+                        max_likelihood = current_likelihood
+                        max_bic = current_bic
+                        best_model = hidden_semi_markov_model
+                        best_model.save(os.path.join(OUTPUT_PATH, 'RandomInit_best_model.hsmc'))
+                except Exception as e:
+                    print('RandomInit: n_iter %d estimation failure' % i)
+                    logging.warning(e)
             self.hsmm = best_model
             self.hsmm.save(self._hsmc_file)
             self.secure_probabilities_sum(self._hsmc_file)
@@ -132,14 +137,14 @@ class Model(object):
                 f.write(str(self._k))
                 f.write(' STATES\n\n')
                 f.write('INITIAL_PROBABILITIES\n')
-                for i in xrange(0, self._k):
+                for i in range(0, self._k):
                     f.write(str(self.parameters.initial_probabilities.initial_probabilities[i]))
                     if i != self._k - 1:
                         f.write('     ')
                 f.write('\n\n')
                 f.write('TRANSITION_PROBABILITIES\n')
-                for i in xrange(0, self._k):
-                    for j in xrange(0, self._k):
+                for i in range(0, self._k):
+                    for j in range(0, self._k):
                         f.write(str(self.parameters.transition_probabilities.transition_probabilities[i, j]))
                         if j != self._k - 1:
                             f.write('     ')
@@ -181,7 +186,7 @@ class Model(object):
                         f.write('STATE ')
                         f.write(str(observation_distribution.observation_distribution_number))
                         f.write(' OBSERVATION_DISTRIBUTION\n')
-                        for i in xrange(0, len(observation_distribution.outputs)):
+                        for i in range(0, len(observation_distribution.outputs)):
                             f.write('OUTPUT ')
                             f.write(str(i))
                             f.write(' : ')
@@ -252,7 +257,7 @@ class Model(object):
                 if 'TRANSITION_PROBABILITIES' in l:
                     trans_p = np.zeros(
                         shape=(self._k, self._k))
-                    for i in xrange(0, self._k):
+                    for i in range(0, self._k):
                         l = f.readline()
                         row = map(float, l.split())
                         trans_p[i, :] = row
@@ -261,7 +266,7 @@ class Model(object):
                     # absorbing states
                     occupancy_d = []
                     absorbing_states = []
-                    for i in xrange(0, self._k):
+                    for i in range(0, self._k):
                         if trans_p.transition_probabilities[i, i] == 1:
                             absorbing_states.append(i)
                     for absorbing_state in absorbing_states:
@@ -315,7 +320,7 @@ class Model(object):
                     output_process_number = int(l.split()[1])
                     output_process_type = l.split()[3]
                     observation_d = []
-                    for _ in xrange(0, self._k):
+                    for _ in range(0, self._k):
                         while 'OBSERVATION_DISTRIBUTION' not in l:
                             l = f.readline()
                         observation_distribution_number = int(l.split()[1])
@@ -336,7 +341,7 @@ class Model(object):
                             outputs.append(float(l.split()[3]))
                             l = f.readline()
                         if len(output_numbers) != size_of_output_process:
-                            for i in xrange(0, size_of_output_process):
+                            for i in range(0, size_of_output_process):
                                 if i not in output_numbers:
                                     outputs.insert(i, 0.)
                         observation_d.append(
@@ -375,7 +380,7 @@ class Model(object):
         if n_iter < 1:
             raise ValueError('n_iter must be > 0.')
         self.hsmm = HiddenSemiMarkov(self._hsmc_file)
-        self.hsmm = Estimate(self._eye_movement_data.input_sequence(self._output_process_name),
+        self.hsmm = Estimate(self._eye_movement_data.get_input_sequence(self._output_process_name),
                              "HIDDEN_SEMI-MARKOV", self.hsmm, NbIteration=n_iter)
         self.hsmm.save(self._hsmc_file)
         self.secure_probabilities_sum(self._hsmc_file)
@@ -389,7 +394,7 @@ class Model(object):
     def update_restored_data(self):
         """Update restaured data after running estimate."""
         restored_data = self.hsmm.extract_data()
-        self.eye_movement_data.restored_data = self.eye_movement_data.dataframe.assign(
+        self.eye_movement_data.restored_data = self.eye_movement_data.assign(
             STATES=[fixation[0] for text_reading in restored_data for fixation in text_reading])
         self.eye_movement_data.restored_data['PHASE'] = self.eye_movement_data.restored_data.STATES
         self.eye_movement_data.restored_data.at[self.eye_movement_data.restored_data.PHASE < 2, 'PHASE'] = 0
@@ -404,14 +409,14 @@ class Model(object):
                 if (verbose or ('#' not in l and l != '\n')) and bool(l):
                     print(l)
 
-    def generate_random_sequences(self, number_of_sequences_to_generate=100):
+    def generate_random_sequences(self, n_seq=100):
         """Generate random sequences.
 
-        Select a random observed sequence of in self.input_sequence
+        Select a random observed sequence of in self.get_input_sequence
         ('READMODE' by default) and generate a corresponding
         random hidden sequence.
 
-        :param number_of_sequences_to_generate: an integer, the number of
+        :param n_seq: an integer, the number of
         sequences to be generated
         :return: a list of list of list containing [the generated sequence,
         the output processes]
@@ -422,12 +427,12 @@ class Model(object):
         """
 
         def generate_any_random_sequences(random_sequences, number_of_sequences_left):
-            iseq = self.eye_movement_data.input_sequence(self._output_process_name)
- 
+            iseq = self.eye_movement_data.get_input_sequence(self._output_process_name)
+
             rseq = random_sequences
             n_output_processes = len(iseq[0][0])
 
-            for _ in xrange(0, number_of_sequences_left):
+            for _ in range(0, number_of_sequences_left):
                 sequence_number = random.randint(0, len(iseq) - 1)
                 random_sequence = []
                 sequence_length = len(iseq[sequence_number])
@@ -439,7 +444,7 @@ class Model(object):
                 random_sequence = iseq[sequence_number][:]
                 current_hidden_state = random.sample(range(0, self._k), 1)[0]
                 random_sequence[0].insert(0, current_hidden_state)
-                for i in xrange(1, sequence_length):
+                for i in range(1, sequence_length):
                     if i in transition_instants:
                         possible_new_state = range(0, self._k)
                         possible_new_state.remove(current_hidden_state)
@@ -452,7 +457,7 @@ class Model(object):
                 """
                 random_hidden_states = [random.randint(0, self._k - 1)]
                 current_hidden_state = random_hidden_states[0]
-                for _ in xrange(0, number_of_transitions):
+                for _ in range(0, number_of_transitions):
                     previous_hidden_state = current_hidden_state
                     while True:
                         random_hidden_states.append(
@@ -463,11 +468,11 @@ class Model(object):
                         else:
                             random_hidden_states.pop()
                 i = 0
-                for j in xrange(0, len(random_hidden_states) - 1):
-                    for _ in xrange(i, transition_instants[j]):
+                for j in range(0, len(random_hidden_states) - 1):
+                    for _ in range(i, transition_instants[j]):
                         random_sequence.append([random_hidden_states[j]])
                         i += 1
-                for _ in xrange(i, sequence_length):
+                for _ in range(i, sequence_length):
                     random_sequence.append([random_hidden_states[-1]])
                     i += 1
                 i = 0
@@ -482,26 +487,26 @@ class Model(object):
         def remove_invalid_sequences(random_sequences):
             # check that censured freq are always smaller than freq
             # initialization of freq tables
-            iseq = self.eye_movement_data.input_sequence(self._output_process_name)
+            iseq = self.eye_movement_data.get_input_sequence(self._output_process_name)
             max_seq_len = -1
             for text_reading in iseq:
                 if len(text_reading) > max_seq_len:
                     max_seq_len = len(text_reading)
             single_run = dict(
-                [(key, [0] * max_seq_len) for key in xrange(0, self._k)])
+                [(key, [0] * max_seq_len) for key in range(0, self._k)])
             initial_run = dict(
-                [(key, [0] * max_seq_len) for key in xrange(0, self._k)])
+                [(key, [0] * max_seq_len) for key in range(0, self._k)])
             final_run = dict(
-                [(key, [0] * max_seq_len) for key in xrange(0, self._k)])
+                [(key, [0] * max_seq_len) for key in range(0, self._k)])
             frequency = dict(
-                [(key, [0] * max_seq_len) for key in xrange(0, self._k)])
+                [(key, [0] * max_seq_len) for key in range(0, self._k)])
             # build freq tables
-            for i in xrange(0, len(random_sequences)):
+            for i in range(0, len(random_sequences)):
                 initial_run_bool = True
                 current_state = random_sequences[i][0][0]
                 it = 0
                 global_it = 0
-                for j in xrange(0, len(random_sequences[i])):
+                for j in range(0, len(random_sequences[i])):
                     it += 1
                     global_it += 1
                     previous_state = current_state
@@ -519,7 +524,7 @@ class Model(object):
                         final_run[current_state][it] += 1
             # max freq for non censored sojourn time
             max_seq_len_per_hidden_space = []
-            for i in xrange(0, self._k):
+            for i in range(0, self._k):
                 for j in range(max_seq_len - 1, 0, -1):
                     if frequency[i][j] != 0:
                         max_seq_len_per_hidden_space.append(j)
@@ -530,12 +535,12 @@ class Model(object):
             # seq to be removed
             # (which have censored time longer than non censored time)
             pop_list = []
-            for i in xrange(0, len(random_sequences)):
+            for i in range(0, len(random_sequences)):
                 initial_run_bool = True
                 current_state = random_sequences[i][0][0]
                 it = 0
                 global_it = 0
-                for j in xrange(0, len(random_sequences[i])):
+                for j in range(0, len(random_sequences[i])):
                     it += 1
                     global_it += 1
                     previous_state = current_state
@@ -567,13 +572,13 @@ class Model(object):
 
         random_sequences = []
         i = 0
-        while len(random_sequences) < number_of_sequences_to_generate:
+        while len(random_sequences) < n_seq:
             i += 1
             logging.debug('iter: %d, number of sequences to generate: %d, current length: %d', i,
-                          number_of_sequences_to_generate, len(random_sequences))
+                          n_seq, len(random_sequences))
             random_sequences = generate_any_random_sequences(
                 random_sequences,
-                number_of_sequences_to_generate - len(random_sequences))
+                n_seq - len(random_sequences))
             logging.debug('number of seq after generation at iter %d: %d', i, len(random_sequences))
             random_sequences = remove_invalid_sequences(random_sequences)
             logging.debug('number of seq after remove invalid seq at iter %d: %d', i, len(random_sequences))
@@ -646,26 +651,26 @@ class Model(object):
                 if 'TRANSITION_PROBABILITIES' in l:
                     transition_probabilities = np.zeros(
                         shape=(k, k))
-                    for i in xrange(0, k):
+                    for i in range(0, k):
                         l = f.readline()
                         row = map(float, l.split())
                         transition_probabilities[i, :] = row
                     break
 
         prob_sum = 0
-        for i in xrange(0, k - 1):
+        for i in range(0, k - 1):
             initial_probabilities[i] = truncate(initial_probabilities[i], 6)
             prob_sum += initial_probabilities[i]
         initial_probabilities[k - 1] = 1 - prob_sum
-        for i in xrange(0, k - 1):
+        for i in range(0, k - 1):
             prob_sum = 0
-            for j in xrange(0, k - 1):
+            for j in range(0, k - 1):
                 transition_probabilities[i, j] = truncate(
                     transition_probabilities[i, j], 6)
                 prob_sum += transition_probabilities[i, j]
             transition_probabilities[i, k - 1] = 1 - prob_sum
         prob_sum = 0
-        for j in xrange(1, k):
+        for j in range(1, k):
             prob_sum += transition_probabilities[k - 1, j]
         transition_probabilities[k - 1, 0] = 1 - prob_sum
 
@@ -679,7 +684,7 @@ class Model(object):
                     elif 'INITIAL_PROBABILITIES' in l:
                         temp_file.write('INITIAL_PROBABILITIES\n')
                         old_file.readline()
-                        for i in xrange(0, k):
+                        for i in range(0, k):
                             temp_file.write(str(initial_probabilities[i]))
                             if i != k - 1:
                                 temp_file.write('     ')
@@ -687,9 +692,9 @@ class Model(object):
                     elif 'TRANSITION_PROBABILITIES' in l:
                         temp_file.write('TRANSITION_PROBABILITIES\n')
                         old_file.readline()
-                        for i in xrange(0, k):
+                        for i in range(0, k):
                             old_file.readline()
-                            for j in xrange(0, k):
+                            for j in range(0, k):
                                 temp_file.write(
                                     str(transition_probabilities[i, j]))
                                 if j != k - 1:
