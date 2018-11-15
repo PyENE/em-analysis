@@ -11,6 +11,10 @@ import seaborn as sns
 import unidecode
 import webbrowser
 
+
+PNG_PATH = '/home/bolivier/PyENE/PyENE-data/em-analysis/data/Materiel/'
+
+
 class Htmlreport(object):
     """Build an HTML report given a model."""
     def __init__(self, model, graph_probability_threshold=0.01,
@@ -40,8 +44,8 @@ class Htmlreport(object):
             self._nb_states -= 1
 
         self._model.update_restored_data()
-        self._model.eye_movement_data.restored_data.to_excel(self._model.eye_movement_data.restored_data_file_path,
-                                                           index=False)
+        #self._model.eye_movement_data.restored_data.to_excel(self._model.eye_movement_data.restored_data_file_path,
+        #                                                   index=False)
         self._generate_transition_graph()
         self._generate_sojourn_distribution_plots()
         self._generate_emission_distribution_plots()
@@ -88,7 +92,6 @@ class Htmlreport(object):
         if self._phase:
             phase_or_state = 'PHASE'
 
-        sns.set_palette(COLOR_PALETTE)
         matplotlib.rcParams['figure.figsize'] = (20.0, 10.0)
         df = self._model.eye_movement_data.restored_data
 
@@ -194,7 +197,7 @@ class Htmlreport(object):
         for i in rdm_index:
             self.text_restorations_display_list.append([subj_text_list.loc[i][0], subj_text_list.loc[i][1]])
             visuscanpath.plot_scanpath(dataframe=self._model.eye_movement_data.restored_data, display=False,
-                                       img_path=os.path.join(PNG_TEXTS_PATH,
+                                       img_path=os.path.join(PNG_PATH,
                                                              unidecode.unidecode(subj_text_list.loc[i][1]) + ".png"),
                                        subject=subj_text_list.loc[i][0],
                                        text_name=subj_text_list.loc[i][1],

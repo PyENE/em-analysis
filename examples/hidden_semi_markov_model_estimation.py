@@ -15,7 +15,7 @@ output_model_file = "./output_model2.hsmc"
 hsmm = HiddenSemiMarkov(input_model_file)
 
 simulated_data = hsmm.simulation_markovian_sequences(
-    1000, EyeMovementData().input_sequence, False)
+    1000, EyeMovementData().get_input_sequence, False)
 
 text_reading_list = []
 for text_reading in simulated_data:

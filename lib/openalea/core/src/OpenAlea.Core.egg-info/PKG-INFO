@@ -6,6 +6,5 @@ Home-page: http://openalea.gforge.inria.fr
 Author: OpenAlea consortium
 Author-email: christophe.pradal@cirad.fr
 License: Cecill-C
-Description-Content-Type: UNKNOWN
 Description: OpenAlea.Core is able to discover and manage packages and logical components, build and evaluate dataflows and Generate final applications
 Platform: UNKNOWN

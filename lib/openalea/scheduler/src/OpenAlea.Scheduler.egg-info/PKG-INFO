@@ -6,6 +6,5 @@ Home-page: http://openalea.gforge.inria.fr/doc/openalea/scheduler/doc/_build/htm
 Author: Jerome Chopard, Christophe Pradal
 Author-email: jerome.chopard@sophia.inria.fr, christophe.pradal@cirad.fr
 License: Cecill-C
-Description-Content-Type: UNKNOWN
 Description: The scheduler package implement the management of tasks. Used for simulations purposes
 Platform: UNKNOWN

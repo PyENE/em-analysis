@@ -37,7 +37,7 @@ def setup_func():
     hsmc_file = os.path.join(MODELS_PATH, "model3_init5abs.hsmc")
     model = Model(data, init_hsmc_file=hsmc_file)
     model_init = HiddenSemiMarkov(hsmc_file)
-    s3b = model._sequential_data.input_sequence
+    s3b = model._sequential_data.get_input_sequence
     return s3a, s3b, model, model_init
 
 

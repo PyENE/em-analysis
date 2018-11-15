@@ -5,7 +5,9 @@ build-scons
 dist
 doc
 share
+output
 
+**.egg-info**
 *.pyc
 *.so
 *.os

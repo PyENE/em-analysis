@@ -119,7 +119,7 @@ for i in xrange(0, number_of_simulations):
     input_file = write_input_file(pi[0], A, B, sojourn_distribution_list)
     print input_file
     hsmm = HiddenSemiMarkov(input_file)
-    simulated_data = hsmm.simulation_markovian_sequences(100, EyeMovementData().input_sequence, False)
+    simulated_data = hsmm.simulation_markovian_sequences(100, EyeMovementData().get_input_sequence, False)
     text_reading_list = []
     for text_reading in simulated_data:
         fixation_list = []

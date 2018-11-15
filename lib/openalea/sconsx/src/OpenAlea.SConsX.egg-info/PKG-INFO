@@ -6,7 +6,6 @@ Home-page: UNKNOWN
 Author: Christophe Pradal
 Author-email: christophe.pradal@cirad.fr
 License: Cecill-C
-Description-Content-Type: UNKNOWN
 Description: 
         Scons Configuration Utilities for OpenAlea.
         

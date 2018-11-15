@@ -6,6 +6,5 @@ Home-page: http://openalea.gforge.inria.fr
 Author: "Julien Coste, Christophe Pradal"
 Author-email: julien.coste@inria.fr, christophe.pradal@inria.fr
 License: Cecill-C
-Description-Content-Type: UNKNOWN
 Description: The PkgIt package is a package to help packaging dependencies and so to create releases.
 Platform: UNKNOWN

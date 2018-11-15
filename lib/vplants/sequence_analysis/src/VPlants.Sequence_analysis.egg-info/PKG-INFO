@@ -6,6 +6,5 @@ Home-page: http://openalea.gforge.inria.fr/doc/vplants/sequence_analysis/doc/_bu
 Author: Y. Guedon, T. Cokelaer
 Author-email: yann.guedon@cirad.fr, christophe.pradal@cirad.fr, thomas.cokelaer@sophia.inria.fr
 License: CeCILL-C
-Description-Content-Type: UNKNOWN
 Description: Python version of sequence analysis (AML stat)
 Platform: UNKNOWN

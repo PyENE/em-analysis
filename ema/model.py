@@ -22,7 +22,7 @@ class Model(object):
     """Stores a HSMM model and its parameters."""
 
     def __init__(self, eye_movement_data, model_type='HIDDEN_SEMI-MARKOV_CHAIN',
-                 output_process_name='READMODE', init_hsmc_file=None,
+                 output_process_name=['READMODE'], init_hsmc_file=None,
                  k=None, random_init=False, n_init=None, n_random_seq=None,
                  n_iter_init=None):
         """Model constructor."""
@@ -85,7 +85,9 @@ class Model(object):
                 StateSequences='Viterbi', Counting=False)
             max_likelihood = best_model.get_likelihood()
             max_bic = best_model.get_bic_vector()[-1]
-            best_model.save(os.path.join(OUTPUT_PATH, 'RandomInit_best_model.hsmc'))
+            best_model.save(os.path.join(OUTPUT_PATH, 'RandomInit_best_model_k%d.hsmc' % self._k))
+            max_likelihood = -np.inf
+            max_bic = -np.inf
             print('RandomInit: init, ll %.2f, bic %.2f, n_params %d' %
                   (max_likelihood, best_model.get_bic_vector()[-1], best_model.get_nb_param_vector()[-1]))
             for i in range(0, n_init):
@@ -103,17 +105,26 @@ class Model(object):
                           (i, current_likelihood,hidden_semi_markov_model.get_bic_vector()[-1],
                            hidden_semi_markov_model.get_nb_param_vector()[-1]))
                     # current_likelihood = hidden_semi_markov_model.get_nb_param_vector()[-1]  # to comment
-                    if current_bic > max_bic:
+                    if current_likelihood > max_likelihood:
                         self._log_likelihood = hidden_semi_markov_model.get_likelihood_vector()
                         self._bic = hidden_semi_markov_model.get_bic_vector()
                         self._nb_parameters = hidden_semi_markov_model.get_nb_param_vector()
-                        print('RandomInit: a better model was found. n_iter %d, old ll %.2f, new ll %.2f,'
+                        print('RandomInit: a model with better LL was found. n_iter %d, old ll %.2f, new ll %.2f,'
                               'new bic %.2f, n_param %d' %
                               (i, current_likelihood, self._log_likelihood[-1], self._bic[-1], self._nb_parameters[-1]))
                         max_likelihood = current_likelihood
-                        max_bic = current_bic
                         best_model = hidden_semi_markov_model
-                        best_model.save(os.path.join(OUTPUT_PATH, 'RandomInit_best_model.hsmc'))
+                        best_model.save(
+                            os.path.join(OUTPUT_PATH, 'RandomInit_best_ll_model_k%d.hsmc' % self._k))
+                    if current_bic > max_bic:
+                        print('RandomInit: a model with better BIC was found. n_iter %d, old ll %.2f, new ll %.2f,'
+                              'new bic %.2f, n_param %d' %
+                              (i, self._log_likelihood[-1], hidden_semi_markov_model.get_likelihood(),
+                               hidden_semi_markov_model.get_bic_vector()[-1],
+                               hidden_semi_markov_model.get_nb_param_vector()[-1]))
+                        max_bic = current_bic
+                        hidden_semi_markov_model.save(
+                            os.path.join(OUTPUT_PATH, 'RandomInit_best_bic_model_k%d.hsmc' % self._k))
                 except Exception as e:
                     print('RandomInit: n_iter %d estimation failure' % i)
                     logging.warning(e)

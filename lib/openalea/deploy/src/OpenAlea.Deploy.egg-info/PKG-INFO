@@ -6,7 +6,6 @@ Home-page: http://openalea.gforge.inria.fr
 Author: "Christophe Pradal, Samuel Dufour-Kowalski"
 Author-email: christophe.pradal@cirad.fr
 License: Cecill-C
-Description-Content-Type: UNKNOWN
 Description: Setuptools extension for OpenAlea packages
 Keywords: setuptools,shared lib
 Platform: UNKNOWN
