@@ -2,7 +2,13 @@
 __author__ = 'Brice Olivier'
 
 
-OUTPUT_PATH = '/home/bolivier/PyENE/PyENE/em-analysis/output/'
+import os
+cdir = os.path.dirname(__file__)
+
+# OUTPUT_PATH = '/home/bolivier/PyENE/PyENE/em-analysis/output/'
+DATA_PATH = os.path.join(cdir, 'share','data')
+OUTPUT_PATH = os.path.join(cdir, 'share','models')
+MODEL_PATH = OUTPUT_PATH
 
 IS_FIRST_COL = 'ISFIRST'
 IS_LAST_COL = 'ISLAST'

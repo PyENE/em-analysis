@@ -24,7 +24,7 @@ class Model(object):
     def __init__(self, eye_movement_data, model_type='HIDDEN_SEMI-MARKOV_CHAIN',
                  output_process_name=['READMODE'], init_hsmc_file=None,
                  k=None, random_init=False, n_init=None, n_random_seq=None,
-                 n_iter_init=None):
+                 n_iter_init=None, output_path=None):
         """Model constructor."""
 
         self.parameters = None
@@ -45,7 +45,12 @@ class Model(object):
         self._tmp_path = tempfile.mkdtemp(prefix='ema-tmp-dir-')
         self._model_id = self._tmp_path[-6:]
         self._n_iter = 0
-        self._hsmc_file = os.path.join(OUTPUT_PATH, self._model_id + '.hsmc')
+        if (output_path is None):
+            my_output_path = os.path.join(OUTPUT_PATH, self._model_id + '.hsmc')
+            self._hsmc_file = my_output_path
+        else:
+            my_output_path = output_path
+            self._hsmc_file = os.path.join(output_path, self._model_id + '.hsmc')        
 
         # init with hsmc file
         if init_hsmc_file is not None and not random_init and \
@@ -85,7 +90,7 @@ class Model(object):
                 StateSequences='Viterbi', Counting=False)
             max_likelihood = best_model.get_likelihood()
             max_bic = best_model.get_bic_vector()[-1]
-            best_model.save(os.path.join(OUTPUT_PATH, 'RandomInit_best_model_k%d.hsmc' % self._k))
+            best_model.save(os.path.join(my_output_path, 'RandomInit_best_model_k%d.hsmc' % self._k))
             max_likelihood = -np.inf
             max_bic = -np.inf
             print('RandomInit: init, ll %.2f, bic %.2f, n_params %d' %
@@ -94,8 +99,8 @@ class Model(object):
                 try:
                     random_sequences = Sequences(self.generate_random_sequences(n_random_seq))
                     semi_markov_model = Estimate(_MarkovianSequences(random_sequences), "SEMI-MARKOV", 'Ordinary')
-                    semi_markov_model.write_hidden_semi_markov_init_file(os.path.join(OUTPUT_PATH, 'temp.hsmc'))
-                    hidden_semi_markov_model = HiddenSemiMarkov(os.path.join(OUTPUT_PATH, 'temp.hsmc'))
+                    semi_markov_model.write_hidden_semi_markov_init_file(os.path.join(my_output_path, 'temp.hsmc'))
+                    hidden_semi_markov_model = HiddenSemiMarkov(os.path.join(my_output_path, 'temp.hsmc'))
                     hidden_semi_markov_model = Estimate(
                         self._eye_movement_data.get_input_sequence(self._output_process_name), "HIDDEN_SEMI-MARKOV",
                         hidden_semi_markov_model, NbIteration=n_iter_init)
@@ -115,7 +120,7 @@ class Model(object):
                         max_likelihood = current_likelihood
                         best_model = hidden_semi_markov_model
                         best_model.save(
-                            os.path.join(OUTPUT_PATH, 'RandomInit_best_ll_model_k%d.hsmc' % self._k))
+                            os.path.join(my_output_path, 'RandomInit_best_ll_model_k%d.hsmc' % self._k))
                     if current_bic > max_bic:
                         print('RandomInit: a model with better BIC was found. n_iter %d, old ll %.2f, new ll %.2f,'
                               'new bic %.2f, n_param %d' %
@@ -124,7 +129,7 @@ class Model(object):
                                hidden_semi_markov_model.get_nb_param_vector()[-1]))
                         max_bic = current_bic
                         hidden_semi_markov_model.save(
-                            os.path.join(OUTPUT_PATH, 'RandomInit_best_bic_model_k%d.hsmc' % self._k))
+                            os.path.join(my_output_path, 'RandomInit_best_bic_model_k%d.hsmc' % self._k))
                 except Exception as e:
                     print('RandomInit: n_iter %d estimation failure' % i)
                     logging.warning(e)
