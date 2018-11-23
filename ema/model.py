@@ -418,6 +418,24 @@ class Model(object):
         self.eye_movement_data.restored_data.at[self.eye_movement_data.restored_data.PHASE == 3, 'PHASE'] = 2
         self.eye_movement_data.restored_data.at[self.eye_movement_data.restored_data.PHASE == 4, 'PHASE'] = 3
 
+    def empirical_transition_matrix(self):
+        """
+        Reestimate transition counts and matrix 
+        using restored states.
+        """
+        l = self.hsmm.extract_data()
+        l = l.select_variable([1],keep=True)
+        A = np.zeros((self.k, self.k))
+        B = np.zeros((self.k, self.k))
+        # Compute transition counts
+        for s in l:
+            for i in range(1,len(s)):
+                A[s[i-1],s[i]] += 1
+        # Renormalize as relative frequencies
+        for s in range(self.k):
+            B[s] = A[s]/A[s].sum()
+        return(A, B)
+            
     def print_hsmc_file(self, verbose=True):
         """Print the content inside hsmc_file on the stdout."""
         with open(self._hsmc_file, 'r') as f:

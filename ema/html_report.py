@@ -11,9 +11,7 @@ import seaborn as sns
 import unidecode
 import webbrowser
 
-
-PNG_PATH = '/home/bolivier/PyENE/PyENE-data/em-analysis/data/Materiel/'
-
+from openalea.PyENE_em_analysis import PNG_PATH
 
 class Htmlreport(object):
     """Build an HTML report given a model."""
