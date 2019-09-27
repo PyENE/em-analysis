@@ -11,16 +11,16 @@ import seaborn as sns
 import unidecode
 import webbrowser
 
-from openalea.PyENE_em_analysis import PNG_PATH
 
 class Htmlreport(object):
     """Build an HTML report given a model."""
-    def __init__(self, model, graph_probability_threshold=0.01,
+    def __init__(self, model, png_path, graph_probability_threshold=0.01,
                  graph_decimals_displayed=3,
                  number_of_text_restorations_to_display=100, 
                  subj=None, text=None, phase=False):
 
         self._model = model
+        self._png_path = png_path
         self._graph_probability_threshold = graph_probability_threshold
         self._graph_decimals_displayed = graph_decimals_displayed
         self._number_of_text_restorations_to_display = number_of_text_restorations_to_display
@@ -143,6 +143,9 @@ class Htmlreport(object):
         """
 
     def _generate_text_restoration_plots(self, subj=None, text=None):
+        import random
+        random.seed(1)
+        np.random.seed(1)
         visuscanpath.config.X_COL = 'X'
         visuscanpath.config.Y_COL = 'Y'
         visuscanpath.config.FIXATION_DURATION_COL = 'FDUR'
@@ -157,12 +160,13 @@ class Htmlreport(object):
                                                  [4, 9], [4, 54], [6, 9]]
         """
         rdf['READMODETMP'] = rdf['READMODE']
+        """
         rdf.at[rdf.READMODETMP == 0, 'READMODETMP'] = 'LReg'
         rdf.at[rdf.READMODETMP == 1, 'READMODETMP'] = 'Reg'
         rdf.at[rdf.READMODETMP == 2, 'READMODETMP'] = 'Ref'
         rdf.at[rdf.READMODETMP == 3, 'READMODETMP'] = 'Pr'
         rdf.at[rdf.READMODETMP == 4, 'READMODETMP'] = 'LPr'
-
+        """
         phase_or_state = 'STATES'
         if self._phase:
             phase_or_state = 'PHASE'
@@ -195,11 +199,11 @@ class Htmlreport(object):
         for i in rdm_index:
             self.text_restorations_display_list.append([subj_text_list.loc[i][0], subj_text_list.loc[i][1]])
             visuscanpath.plot_scanpath(dataframe=self._model.eye_movement_data.restored_data, display=False,
-                                       img_path=os.path.join(PNG_PATH,
+                                       img_path=os.path.join(self._png_path,
                                                              unidecode.unidecode(subj_text_list.loc[i][1]) + ".png"),
                                        subject=subj_text_list.loc[i][0],
                                        text_name=subj_text_list.loc[i][1],
-                                       print_col='READMODETMP',
+                                       #print_col='READMODETMP',
                                        hue=phase_or_state,
                                        output_file=os.path.join(OUTPUT_PATH, self._model.model_id + "-subj-" +
                                                                 subj_text_list.loc[i][0] +
