@@ -20,11 +20,10 @@ import transition_probabilities
 
 class Model(object):
     """Stores a HSMM model and its parameters."""
-
     def __init__(self, eye_movement_data, model_type='HIDDEN_SEMI-MARKOV_CHAIN',
                  output_process_name=['READMODE'], init_hsmc_file=None,
                  k=None, random_init=False, n_init=None, n_random_seq=None,
-                 n_iter_init=None, output_path=None):
+                 n_iter_init=None, output_path=None, benchmark_random_init=False, hypercube_jitter_init=False):
         """Model constructor."""
 
         self.parameters = None
@@ -50,7 +49,8 @@ class Model(object):
             self._hsmc_file = my_output_path
         else:
             my_output_path = output_path
-            self._hsmc_file = os.path.join(output_path, self._model_id + '.hsmc')        
+            self._hsmc_file = os.path.join(output_path, self._model_id + '.hsmc')
+        print self._hsmc_file
 
         # init with hsmc file
         if init_hsmc_file is not None and not random_init and \
@@ -88,48 +88,60 @@ class Model(object):
                 'Irreducible', OccupancyMean='Estimated',
                 NbIteration=n_iter_init, Estimator='CompleteLikelihood',
                 StateSequences='Viterbi', Counting=False)
-            max_likelihood = best_model.get_likelihood()
-            max_bic = best_model.get_bic_vector()[-1]
             best_model.save(os.path.join(my_output_path, 'RandomInit_best_model_k%d.hsmc' % self._k))
             max_likelihood = -np.inf
             max_bic = -np.inf
+            max_icl = -np.inf
             print('RandomInit: init, ll %.2f, bic %.2f, n_params %d' %
                   (max_likelihood, best_model.get_bic_vector()[-1], best_model.get_nb_param_vector()[-1]))
             for i in range(0, n_init):
                 try:
                     random_sequences = Sequences(self.generate_random_sequences(n_random_seq))
                     semi_markov_model = Estimate(_MarkovianSequences(random_sequences), "SEMI-MARKOV", 'Ordinary')
-                    semi_markov_model.write_hidden_semi_markov_init_file(os.path.join(my_output_path, 'temp.hsmc'))
-                    hidden_semi_markov_model = HiddenSemiMarkov(os.path.join(my_output_path, 'temp.hsmc'))
-                    hidden_semi_markov_model = Estimate(
+                    semi_markov_model.write_hidden_semi_markov_init_file(self._hsmc_file)
+                    self.hsmm = HiddenSemiMarkov(self._hsmc_file)
+                    self.hsmm = Estimate(
                         self._eye_movement_data.get_input_sequence(self._output_process_name), "HIDDEN_SEMI-MARKOV",
-                        hidden_semi_markov_model, NbIteration=n_iter_init)
-                    current_likelihood = hidden_semi_markov_model.get_likelihood()
-                    current_bic = hidden_semi_markov_model.get_bic_vector()[-1]
+                        self.hsmm, NbIteration=n_iter_init-10)
+                    self.iterate_em(10)
+                    current_likelihood = self.hsmm.get_likelihood()
+                    current_bic = self.hsmm.get_bic_vector()[-1]
+                    current_icl = self._criterion['ICL']
+                    """
                     print('RandomInit: n_iter %d, ll %.2f, bic %.2f, n_params %d' %
-                          (i, current_likelihood,hidden_semi_markov_model.get_bic_vector()[-1],
-                           hidden_semi_markov_model.get_nb_param_vector()[-1]))
-                    # current_likelihood = hidden_semi_markov_model.get_nb_param_vector()[-1]  # to comment
+                          (i, current_likelihood,self.hsmm .get_bic_vector()[-1],
+                           self.hsmm.get_nb_param_vector()[-1]))
+                    """
+                    # current_likelihood = self.hsmm.get_nb_param_vector()[-1]  # to comment
                     if current_likelihood > max_likelihood:
-                        self._log_likelihood = hidden_semi_markov_model.get_likelihood_vector()
-                        self._bic = hidden_semi_markov_model.get_bic_vector()
-                        self._nb_parameters = hidden_semi_markov_model.get_nb_param_vector()
+                        self._log_likelihood = self.hsmm.get_likelihood_vector()
+                        self._bic = self.hsmm.get_bic_vector()
+                        self._nb_parameters = self.hsmm.get_nb_param_vector()
                         print('RandomInit: a model with better LL was found. n_iter %d, old ll %.2f, new ll %.2f,'
                               'new bic %.2f, n_param %d' %
                               (i, current_likelihood, self._log_likelihood[-1], self._bic[-1], self._nb_parameters[-1]))
                         max_likelihood = current_likelihood
-                        best_model = hidden_semi_markov_model
+                        best_model = self.hsmm
                         best_model.save(
                             os.path.join(my_output_path, 'RandomInit_best_ll_model_k%d.hsmc' % self._k))
                     if current_bic > max_bic:
-                        print('RandomInit: a model with better BIC was found. n_iter %d, old ll %.2f, new ll %.2f,'
+                        print('RandomInit: a model with better BIC was found. n_iter %d, old bic %.2f, new bic %.2f,'
                               'new bic %.2f, n_param %d' %
-                              (i, self._log_likelihood[-1], hidden_semi_markov_model.get_likelihood(),
-                               hidden_semi_markov_model.get_bic_vector()[-1],
-                               hidden_semi_markov_model.get_nb_param_vector()[-1]))
+                              (i, self._log_likelihood[-1], max_bic,
+                               current_bic,
+                               self.hsmm.get_nb_param_vector()[-1]))
                         max_bic = current_bic
-                        hidden_semi_markov_model.save(
+                        self.hsmm.save(
                             os.path.join(my_output_path, 'RandomInit_best_bic_model_k%d.hsmc' % self._k))
+                    if current_icl > max_icl:
+                        print('RandomInit: a model with better ICL was found. n_iter %d, old icl %.2f, new icl %.2f,'
+                              'new bic %.2f, n_param %d' %
+                              (i, self._log_likelihood[-1], max_icl,
+                               current_icl,
+                               self.hsmm.get_nb_param_vector()[-1]))
+                        max_icl = current_icl
+                        self.hsmm.save(
+                            os.path.join(my_output_path, 'RandomInit_best_icl_model_k%d.hsmc' % self._k))
                 except Exception as e:
                     print('RandomInit: n_iter %d estimation failure' % i)
                     logging.warning(e)
@@ -139,7 +151,156 @@ class Model(object):
             self._n_iter = n_iter_init
             self.update_parameters()
             self.update_restored_data()
-
+        elif hypercube_jitter_init and n_init and n_iter_init is not None:
+            K = self._k
+            V = len(self.eye_movement_data['READMODE'].unique())
+            max_ll = -np.infty
+            ll_list = []
+            n_iters = np.array([20, 50, 150, 400, 700, 1000, 2000])
+            n_iters_diff = np.concatenate(([n_iters[0]], np.diff(n_iters)))
+            for init_index in range(n_init):
+                pi = np.random.dirichlet(np.ones(K))
+                A = np.random.dirichlet(np.ones(K), K)
+                np.fill_diagonal(A, 0)
+                A = A / np.sum(A, axis=1)[:, np.newaxis]
+                B = np.random.dirichlet(np.ones(K), V)
+                with open(self._hsmc_file, 'w') as f:
+                    f.write('HIDDEN_SEMI-MARKOV_CHAIN\n\n')
+                    f.write(str(K) + ' STATES\n\n')
+                    f.write('INITIAL_PROBABILITIES\n')
+                    for i in range(K):
+                        f.write(str(pi[i]))
+                        if i != K - 1:
+                            f.write('     ')
+                    f.write('\n\n')
+                    f.write('TRANSITION_PROBABILITIES\n')
+                    for i in range(K):
+                        for j in range(K):
+                            f.write(str(A[i, j]))
+                            if j != K - 1:
+                                f.write('     ')
+                        f.write('\n')
+                    f.write('\n\n')
+                    for i in range(K):
+                        f.write('STATE ' + str(i) + ' OCCUPANCY_DISTRIBUTION\n')
+                        f.write('NEGATIVE_BINOMIAL   INF_BOUND : 1   PARAMETER : 1   PROBABILITY : 0.1\n\n')
+                    f.write('1 OUTPUT_PROCESS\n\nOUTPUT_PROCESS 1 : CATEGORICAL\n\n')
+                    for i in range(K):
+                        f.write('STATE ' + str(i) + ' OBSERVATION_DISTRIBUTION\n')
+                        for j in range(V):
+                            f.write('OUTPUT ' + str(j) + ' : ' + str(B[i, j]))
+                            f.write('\n')
+                        f.write('\n')
+                self.secure_probabilities_sum(self._hsmc_file)
+                self.hsmm = HiddenSemiMarkov(self._hsmc_file)
+                self.update_parameters()
+                ll_init = []
+                for n_iter in n_iters_diff:
+                    self.iterate_em(int(n_iter))
+                    ll = self._criterion['ll_observed_seq']
+                    ll_init.append(ll)
+                ll_list.append(ll_init)
+                if ll > max_ll:
+                    print('better LL found iter %d. new %.2f, old %.2f' % (init_index, ll, max_ll))
+                    max_ll = ll
+                    self.hsmm.save(os.path.join(my_output_path, 'hcj_max_ll_init_%d.hsmc' % init_index))
+            np.save(os.path.join(my_output_path, 'hcj_ll'), np.array(ll_list))
+        elif (benchmark_random_init and init_hsmc_file is None and
+              all(item is not None for item in
+                  [k, n_random_seq])):
+            max_ll = -np.infty
+            ll_list = []
+            n_iters = np.array([20, 50, 150, 400, 700, 1000, 2000])
+            n_iters_diff = np.concatenate(([n_iters[0]], np.diff(n_iters)))
+            for init_index in range(n_init):
+                random_sequences = Sequences(self.generate_random_sequences(n_random_seq))
+                smm = Estimate(_MarkovianSequences(random_sequences), "SEMI-MARKOV", 'Ordinary')
+                smm.write_hidden_semi_markov_init_file(self._hsmc_file)
+                self.hsmm = HiddenSemiMarkov(self._hsmc_file)
+                self.update_parameters()
+                ll_init = []
+                for n_iter in n_iters_diff:
+                    self.iterate_em(int(n_iter))
+                    ll = self._criterion['ll_observed_seq']
+                    ll_init.append(ll)
+                ll_list.append(ll_init)
+                if ll > max_ll:
+                    print('SB: better LL found iter %d. new %.2f, old %.2f' % (init_index, ll, max_ll))
+                    max_ll = ll
+                    self.hsmm.save(os.path.join(my_output_path, 'sb_max_ll_init_%d.hsmc' % init_index))
+            np.save(os.path.join(my_output_path, 'sb_ll'), np.array(ll_list))
+            """
+            benchmark_path = os.path.join('/home/bolivier/', 'benchmark-random-init')
+            self._hsmc_file = os.path.join(benchmark_path, 'tmp.hsmc')
+            seq = self._eye_movement_data.get_input_sequence(self._output_process_name)
+            n_inits = np.array([1, 3, 7, 20, 50, 150, 400, 1000])
+            n_iters = np.array([20, 50, 150, 400, 1000])#, 3000])
+            n_iters_diff = np.concatenate(([n_iters[0]], np.diff(n_iters)))
+            # n_inits * best at n_iter * n_iter
+            max_ll = np.ones((len(n_inits), len(n_iters), len(n_iters))) * -np.inf
+            max_bic = np.ones((len(n_inits), len(n_iters), len(n_iters))) * -np.inf
+            max_icl = np.ones((len(n_inits), len(n_iters), len(n_iters))) * -np.inf
+            """"""
+            for i, n_iter_diff in enumerate(n_iters_diff):
+                self.hsmm = Estimate(seq, 'HIDDEN_SEMI-MARKOV', 'Ordinary', self._k, 'Irreducible',
+                                     OccupancyMean='Estimated', NbIteration=int(n_iter_diff),
+                                     Estimator='CompleteLikelihood', StateSequences='Viterbi', Counting=False)
+                self.hsmm.save(os.path.join(benchmark_path, 'auto-init-k-%d-niter-%d.hsmc' % (self._k, n_iters[i])))
+            """"""
+            for j in range(0, n_inits[-1]):
+                n_init_block = np.where(n_inits[j < n_inits][0] == n_inits)[0][0]
+                random_sequences = Sequences(self.generate_random_sequences(n_random_seq))
+                smm = Estimate(_MarkovianSequences(random_sequences), "SEMI-MARKOV", 'Ordinary')
+                smm.write_hidden_semi_markov_init_file(self._hsmc_file)
+                self.hsmm = HiddenSemiMarkov(self._hsmc_file)
+                ll = [-np.inf] * len(n_iters)
+                bic = [-np.inf] * len(n_iters)
+                icl = [-np.inf] * len(n_iters)
+                best_ll_at_niter = []
+                best_bic_at_niter = []
+                best_icl_at_niter = []
+                for i, n_iter_diff in enumerate(n_iters_diff):
+                    self.iterate_em(int(n_iter_diff))
+                    ll[i] = self._criterion['ll_observed_seq']
+                    bic[i] = self._criterion['BIC']
+                    icl[i] = self._criterion['ICL']
+                    print('%d-%d-%d-%.2f-%.2f' % (
+                    j, i, n_iter_diff, self._criterion['ll_observed_seq'], max_ll[n_init_block, i, i]))
+                    if self._criterion['ll_observed_seq'] > max_ll[n_init_block, i, i]:
+                        print('best-%i' %i)
+                        best_ll_at_niter.append(i)
+                    if self._criterion['BIC'] > max_bic[n_init_block, i, i]:
+                        best_bic_at_niter.append(i)
+                    if self._criterion['ICL'] > max_icl[n_init_block, i, i]:
+                        best_icl_at_niter.append(i)
+                for i in best_ll_at_niter:
+                    print('i-%d' %i)
+                    for block_id in range(n_init_block, len(n_inits)):
+                        max_ll[block_id, i, :] = ll
+                    self.hsmm.save(os.path.join(benchmark_path, 'random-init-k-%d-best-ll-at-%d-niter-%d.hsmc' %
+                                                (self._k, i, n_iters[-1])))
+                for i in best_bic_at_niter:
+                    for block_id in range(n_init_block, len(n_inits)):
+                        max_bic[block_id, i, :] = bic
+                    self.hsmm.save(os.path.join(benchmark_path, 'random-init-k-%d-best-bic-at-%d-niter-%d.hsmc' %
+                                                (self._k, i, n_iters[-1])))
+                for i in best_icl_at_niter:
+                    for block_id in range(n_init_block, len(n_inits)):
+                        max_icl[block_id, i, :] = icl
+                    self.hsmm.save(os.path.join(benchmark_path, 'random-init-k-%d-best-icl-at-%d-niter-%d.hsmc' %
+                                                (self._k, i, n_iters[-1])))
+                np.save(os.path.join(benchmark_path, 'max-ll.npy'), max_ll)
+                np.save(os.path.join(benchmark_path, 'max-bic.npy'), max_bic)
+                np.save(os.path.join(benchmark_path, 'max-icl.npy'), max_icl)
+                with open("/home/bolivier/benchmark_output.txt", "w") as f:
+                    f.write("n_init %d" %j)
+                    if best_ll_at_niter is not None:
+                        f.write("better ll found")
+                    if best_bic_at_niter is not None:
+                        f.write("better bic found")
+                    if best_icl_at_niter is not None:
+                        f.write("better icl found")
+                """
         else:
             raise ValueError('Forbidden call.')
 
