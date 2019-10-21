@@ -12,14 +12,6 @@ debian/control
 debian/copyright
 debian/rules
 debian/source/format
-doc/Makefile
-doc/conf.py
-doc/contents.rst
-doc/make.bat
-doc/user/autosum.rst
-doc/user/index.rst
-doc/user/manual.rst
-doc/user/overview.txt
 src/OpenAlea.Core.egg-info/PKG-INFO
 src/OpenAlea.Core.egg-info/SOURCES.txt
 src/OpenAlea.Core.egg-info/dependency_links.txt

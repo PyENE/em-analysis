@@ -14,16 +14,6 @@ debian/control
 debian/copyright
 debian/rules
 debian/source/format
-doc/Doxyfile
-doc/Makefile
-doc/conf.py
-doc/contents.rst
-doc/doc.txt
-doc/make.bat
-doc/user/autosum.rst
-doc/user/index.rst
-doc/user/netx.rst
-doc/user/overview.txt
 examples/networkx/__init__.py
 examples/networkx/conf.py
 examples/networkx/index.rst

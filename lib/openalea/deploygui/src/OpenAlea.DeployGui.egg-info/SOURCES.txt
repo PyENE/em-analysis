@@ -14,14 +14,6 @@ debian/deploygui.xpm
 debian/python-openalea.deploygui.install
 debian/rules
 debian/source/format
-doc/Makefile
-doc/conf.py
-doc/contents.rst
-doc/make.bat
-doc/user/autosum.rst
-doc/user/index.rst
-doc/user/overview.txt
-share/install_icon.ico
 src/deploygui_postinstall.py
 src/OpenAlea.DeployGui.egg-info/PKG-INFO
 src/OpenAlea.DeployGui.egg-info/SOURCES.txt

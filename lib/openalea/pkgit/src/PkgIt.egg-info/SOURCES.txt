@@ -8,17 +8,6 @@ TODO.txt
 metainfo.ini
 setup.cfg
 setup.py
-doc/Makefile
-doc/conf.py
-doc/contents.rst
-doc/make.bat
-doc/user/autosum.rst
-doc/user/index.rst
-doc/user/manual.rst
-doc/user/overview.txt
-doc/user/status.rst
-doc/user/use.rst
-doc/user/use_vplants_example.rst
 notebook/PkgIt_presentation.ipynb
 src/PkgIt.egg-info/PKG-INFO
 src/PkgIt.egg-info/SOURCES.txt

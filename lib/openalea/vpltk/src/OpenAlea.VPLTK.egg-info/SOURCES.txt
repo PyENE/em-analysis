@@ -7,14 +7,6 @@ TODO.txt
 metainfo.ini
 setup.cfg
 setup.py
-doc/Makefile
-doc/conf.py
-doc/contents.rst
-doc/make.bat
-doc/user/autosum.rst
-doc/user/index.rst
-doc/user/manual.rst
-doc/user/overview.txt
 src/OpenAlea.VPLTK.egg-info/PKG-INFO
 src/OpenAlea.VPLTK.egg-info/SOURCES.txt
 src/OpenAlea.VPLTK.egg-info/dependency_links.txt

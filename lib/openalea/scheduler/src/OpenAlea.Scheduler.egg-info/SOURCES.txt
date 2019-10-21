@@ -14,16 +14,6 @@ debian/control
 debian/copyright
 debian/rules
 debian/source/format
-doc/Doxyfile
-doc/Makefile
-doc/conf.py
-doc/contents.rst
-doc/doc.txt
-doc/make.bat
-doc/user/autosum.rst
-doc/user/example1.rst
-doc/user/index.rst
-doc/user/overview.txt
 examples/example1.py
 src/OpenAlea.Scheduler.egg-info/PKG-INFO
 src/OpenAlea.Scheduler.egg-info/SOURCES.txt
