@@ -492,7 +492,7 @@ class Htmlreport(object):
         self._html_code += '</table>\n'
         self._html_code += '</div>\n'
         # scanpath
-        self._html_code += '<div><h1>Text restaurations</h1></div>\n'
+        self._html_code += '<div><h1>Text restorations</h1></div>\n'
         self._html_code += '<div id="restauration_wrap">\n'
         for i in xrange(0, len(self.text_restorations_display_list)):
             self._html_code += '<div>'
