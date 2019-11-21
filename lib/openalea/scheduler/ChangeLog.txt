@@ -1,6 +1,0 @@
-penAlea.Scheduler 0.7.0
--------------------------
-**release xxxx**
-
-- 2009.06.25 : creation of the package 
-- sphinx doc uploaded on the web

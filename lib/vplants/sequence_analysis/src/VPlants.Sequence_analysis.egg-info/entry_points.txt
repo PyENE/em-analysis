@@ -1,4 +1,0 @@
-[wralea]
-vplants.demo = sequence_analysis_wralea.demo.change_point
-vplants.stats = sequence_analysis_wralea
-

@@ -1,3 +1,0 @@
-[console_scripts]
-pkgit = pkgit.easy_pkg:main
-

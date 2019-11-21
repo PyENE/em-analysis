@@ -1,4 +1,0 @@
-[gui_scripts]
-aleashell = openalea.visualea.shell:main
-visualea = openalea.visualea.visualea_script:start_gui
-

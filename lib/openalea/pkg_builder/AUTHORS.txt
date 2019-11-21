@@ -1,3 +1,0 @@
-* Christophe Pradal (christophe pradal at cirad fr) (this package)
-* Thomas Cokelaer (thomas cokelaer at sophia inria fr) (doc, scripts, sphinx layout)
-
