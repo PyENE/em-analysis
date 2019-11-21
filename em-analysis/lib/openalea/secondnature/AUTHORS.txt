@@ -1,3 +1,0 @@
-* Daniel Barbeau (INRIA VirtualPlants)
-* Christophe Pradal (CIRAD VirtualPlants)
-* Frédéric Boudon (CIRAD VirtualPlants)

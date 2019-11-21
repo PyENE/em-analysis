@@ -1,3 +1,0 @@
-[gui_scripts]
-alea_install_gui = openalea.deploygui.alea_install_script:main
-

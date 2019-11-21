@@ -1,2 +1,0 @@
-lib/libvpstat_tool.so
-openalea/stat_tool/cstat_tool.so

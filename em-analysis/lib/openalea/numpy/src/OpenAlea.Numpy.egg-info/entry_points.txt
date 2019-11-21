@@ -1,5 +1,0 @@
-[wralea]
-openalea.numpy = openalea.numpy_wralea
-openalea.numpy.demo = openalea.numpy_demo_wralea
-openalea.numpy.test = openalea.numpy_test_wralea
-
