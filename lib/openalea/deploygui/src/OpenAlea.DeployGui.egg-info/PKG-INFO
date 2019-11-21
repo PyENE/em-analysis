@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: OpenAlea.DeployGui
+Version: 1.0.0
+Summary: OpenAlea graphical installer
+Home-page: http://openalea.gforge.inria.fr
+Author: Christophe Pradal, Samuel Dufour-Kowalski
+Author-email: christophe.pradal@cirad.fr
+License: Cecill-V2
+Description: UNKNOWN
+Keywords: Graphical installer
+Platform: UNKNOWN

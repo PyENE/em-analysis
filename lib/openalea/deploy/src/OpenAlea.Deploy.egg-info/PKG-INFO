@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: OpenAlea.Deploy
+Version: 1.0.0
+Summary: Setuptools extension for OpenAlea
+Home-page: http://openalea.gforge.inria.fr
+Author: "Christophe Pradal, Samuel Dufour-Kowalski"
+Author-email: christophe.pradal@cirad.fr
+License: Cecill-C
+Description: Setuptools extension for OpenAlea packages
+Keywords: setuptools,shared lib
+Platform: UNKNOWN

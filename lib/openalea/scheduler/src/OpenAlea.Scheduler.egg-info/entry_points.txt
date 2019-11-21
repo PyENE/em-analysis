@@ -1,0 +1,3 @@
+[wralea]
+scheduler = openalea.scheduler_wralea
+

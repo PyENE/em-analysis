@@ -1,0 +1,2 @@
+* 08/07/2013 : create package "release"
+* 08/01/2014 : rename it into "PkgIt"

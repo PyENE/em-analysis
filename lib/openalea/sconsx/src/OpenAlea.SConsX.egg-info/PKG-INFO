@@ -1,0 +1,20 @@
+Metadata-Version: 1.0
+Name: OpenAlea.SConsX
+Version: 1.0.0
+Summary: Scons Extension to build multi-platform packages for OpenAlea and others.
+Home-page: UNKNOWN
+Author: Christophe Pradal
+Author-email: christophe.pradal@cirad.fr
+License: Cecill-C
+Description: 
+        Scons Configuration Utilities for OpenAlea.
+        
+        SConsX is a set of tools to enhance multi platform configuration,
+        build and installation.
+        This package extends scons with:
+            * automatic dependency between tools,
+            * default path for library depending on the platform ( Linux, Windows or Cygwin )
+            * automatic option settings
+            * Support for different compilers on Linux and Windows (e.g. gcc, msvc, mingw)
+        
+Platform: UNKNOWN

@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: OpenAlea.GraphEditor
+Version: 1.0.0
+Summary: GraphEditor package for OpenAlea.
+Home-page: http://openalea.gforge.inria.fr
+Author: Daniel Barbeau
+Author-email: daniel.barbeau@sophia.inria.fr
+License: Cecill-C
+Description: An attempt at generalising the viewing and interacting of various sorts of graphs.
+Platform: UNKNOWN

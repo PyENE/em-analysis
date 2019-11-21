@@ -1,0 +1,4 @@
+* Julien Coste
+* Christophe Pradal
+* OpenAlea consortium: http://openalea.gforge.inria.fr
+

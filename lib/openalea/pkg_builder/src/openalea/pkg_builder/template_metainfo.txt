@@ -1,0 +1,18 @@
+
+[metainfo]
+version = $RELEASE.0
+release = $RELEASE
+; must be in [openalea, vplants, alinea]
+project = $DEFAULT_PROJECT
+; the filename of the egg
+name = $FULL_NAME
+; default namespace 
+namespace = $PROJECT
+; package is going to be used by Sphinx to create the title
+package = $PACKAGE_NAME
+description= $PACKAGE_NAME package for $PROJECT_NAME.
+long_description= The $FULL_NAME package is a typical package example to help developper to create their own package, compatible with OpenAlea standards. 
+authors= XXX
+authors_email = XXX@XXX
+url = http://openalea.gforge.inria.fr
+license = Cecill-C

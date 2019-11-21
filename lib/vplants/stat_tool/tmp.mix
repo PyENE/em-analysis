@@ -1,0 +1,44 @@
+MIXTURE
+
+3 DISTRIBUTIONS
+
+WEIGHTS
+0.1  0.2  0.7  
+
+2 VARIABLES
+
+VARIABLE 1 : DISCRETE_PARAMETRIC
+
+STATE 0 OBSERVATION_DISTRIBUTION
+BINOMIAL   INF_BOUND : 2   SUP_BOUND : 12   PROBABILITY : 0.1
+# mean: 3   variance: 0.9   standard deviation: 0.948683
+
+STATE 1 OBSERVATION_DISTRIBUTION
+BINOMIAL   INF_BOUND : 0   SUP_BOUND : 10   PROBABILITY : 0.5
+# mean: 5   variance: 2.5   standard deviation: 1.58114
+
+STATE 2 OBSERVATION_DISTRIBUTION
+BINOMIAL   INF_BOUND : 3   SUP_BOUND : 10   PROBABILITY : 0.8
+# mean: 8.6   variance: 1.12   standard deviation: 1.0583
+
+#    | state 0 observation distribution | state 1 observation distribution | state 2 observation distribution | state 0 cumulative distribution function | state 1 cumulative distribution function | state 2 cumulative distribution function
+
+#    | mixture | distribution 1 | distribution 1 | distribution 1 | cumulative mixture function
+
+VARIABLE 2 : DISCRETE_PARAMETRIC
+
+STATE 0 OBSERVATION_DISTRIBUTION
+POISSON   INF_BOUND : 2   PARAMETER : 8   
+# mean: 10   variance: 8   standard deviation: 2.82843
+
+STATE 1 OBSERVATION_DISTRIBUTION
+POISSON   INF_BOUND : 4   PARAMETER : 5   
+# mean: 9   variance: 5   standard deviation: 2.23607
+
+STATE 2 OBSERVATION_DISTRIBUTION
+POISSON   INF_BOUND : 0   PARAMETER : 2   
+# mean: 2   variance: 2   standard deviation: 1.41421
+
+#    | state 0 observation distribution | state 1 observation distribution | state 2 observation distribution | state 0 cumulative distribution function | state 1 cumulative distribution function | state 2 cumulative distribution function
+
+#    | mixture | distribution 2 | distribution 2 | distribution 2 | cumulative mixture function
